@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Admin - Gestion des produits{% endblock %}
+
+{% block body %}
+    <h1 class="my-4">Gestion des Sweatshirts</h1>
+
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Prix</th>
+                <th>Image</th>
+                <th>Mise en avant</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for sweat in sweatshirts %}
+                <tr>
+                    <td>{{ sweat.name }}</td>
+                    <td>{{ sweat.price }} €</td>
+                    <td><img src="{{ asset('images/' ~ sweat.image) }}" width="80"></td>
+                    <td>{{ sweat.isFeatured ? 'Oui' : 'Non' }}</td>
+                    <td>
+                        <!-- Les boutons viendront plus tard -->
+                        <a href="#" class="btn btn-warning btn-sm disabled">Ajouter</a>
+                        <a href="#" class="btn btn-warning btn-sm disabled">Modifier</a>
+                        <a href="#" class="btn btn-danger btn-sm disabled">Supprimer</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5" class="text-center">Aucun sweatshirt en base.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

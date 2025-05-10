@@ -1,0 +1,70 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil{% endblock %}
+
+{% block body %}
+
+    <style>
+        .featured-title {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            padding: 10px 20px;
+            margin: 40px auto 20px;
+            border: 3px solid #007bff;
+            border-radius: 8px;
+            display: inline-block;
+            color: #007bff;
+            background-color: #f0f8ff;
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+        }
+
+        .title-box {
+            display: inline-block;
+            margin: 40px auto 30px auto;
+            padding: 15px 30px;
+            font-size: 30px;
+            font-weight: bold;
+            color: #007bff;
+            border: 3px solid #007bff;
+            border-radius: 12px;
+            background-color: #f0f8ff;
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.15);
+        }
+
+        .title-box-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+    </style>
+
+    <div class="container mt-5">
+        <div class="title-box-container">
+            <div class="title-box">
+                Bienvenue chez Stubborn
+            </div>
+        </div>
+
+        <h2 class="featured-title">Sweat-shirts mis en avant :</h2>
+
+        {% if featuredSweats is empty %}
+            <p>Aucun sweat mis en avant pour le moment.</p>
+        {% else %}
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                {% for sweat in featuredSweats %}
+                    <div class="col">
+                        <div class="card h-100 shadow-sm">
+                            <img src="{{ asset('images/' ~ sweat.image) }}" class="card-img-top" alt="{{ sweat.name }}" style="object-fit: cover; height: 300px;">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Nom : {{ sweat.name }}</h5>
+                                <p class="card-text">Prix : {{ sweat.price|number_format(2, ',', ' ') }} €</p>
+                                <a href="{{ path('product_show', {id: sweat.id}) }}" class="btn btn-outline-primary">Voir le produit</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

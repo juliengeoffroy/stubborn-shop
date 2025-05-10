@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon panier{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1 class="mb-4 text-center">Mon panier</h1>
+
+    {% if cartItems is empty %}
+        <p class="text-center">Votre panier est vide.</p>
+    {% else %}
+        <table class="table table-bordered align-middle text-center">
+            <thead class="table-light">
+                <tr>
+                    <th>Image</th>
+                    <th>Produit</th>
+                    <th>Taille</th>
+                    <th>Quantité</th>
+                    <th>Prix unitaire</th>
+                    <th>Sous-total</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cartItems %}
+                    <tr>
+                        <td>
+                            <img src="{{ asset('images/' ~ item.sweatshirt.image) }}"
+                                 alt="{{ item.sweatshirt.name }}"
+                                 width="80">
+                        </td>
+                        <td>{{ item.sweatshirt.name }}</td>
+                        <td>{{ item.size }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>{{ item.sweatshirt.price }} €</td>
+                        <td>{{ (item.sweatshirt.price * item.quantity) | number_format(2, ',', ' ') }} €</td>
+                        <td>
+                            <a href="{{ path('cart_remove', { id: item.id }) }}"
+                               class="btn btn-outline-danger btn-sm">Retirer</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="d-flex justify-content-between align-items-center mt-4">
+            <h4 class="mb-0">Total : {{ total | number_format(2, ',', ' ') }} €</h4>
+            <div class="d-flex gap-2">
+                {# ✅ Correction ici : on redirige vers la vraie boutique avec les filtres #}
+                <a href="{{ path('products') }}" class="btn btn-outline-secondary">Continuer mes achats</a>
+                <a href="{{ path('cart_clear') }}" class="btn btn-outline-danger">Vider le panier</a>
+                <a href="{{ path('checkout') }}" class="btn btn-success">Finaliser ma commande</a>
+
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Boutique{% endblock %}
+
+{% block body %}
+    <!-- TITRE ENCADRÉ -->
+
+    <div class="border border-primary p-3 rounded mb-4 d-inline-block">
+        <h1 class="text-primary m-0">Tous nos sweat-shirts :</h1>
+    </div>
+
+    <!-- FILTRE ENCADRÉ COMME UNE TABLE -->
+
+    <table class="table table-bordered table-sm w-auto">
+        <thead class="table-light">
+            <tr>
+                <th>Fourchette de Prix :</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><a href="{{ path('products') }}">Tous Prix</a></td></tr>
+            <tr><td><a href="{{ path('products', {'min': 10, 'max': 29}) }}">10 à 29 €</a></td></tr>
+            <tr><td><a href="{{ path('products', {'min': 30, 'max': 35}) }}">30 à 35 €</a></td></tr>
+            <tr><td><a href="{{ path('products', {'min': 35, 'max': 50}) }}">35 à 50 €</a></td></tr>
+        </tbody>
+    </table>
+
+    <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+        {% for sweat in sweats %}
+            <div style="border: 1px solid #ccc; padding: 10px; width: 200px;">
+                <h3>{{ sweat.name }}</h3>
+                <p>{{ sweat.price }} €</p>
+                {% if sweat.image %}
+                    <img src="{{ asset('images/' ~ sweat.image) }}" alt="{{ sweat.name }}" width="150">
+                {% endif %}
+                <a href="{{ path('product_show', {id: sweat.id}) }}" class="btn btn-outline-primary mt-2">Voir le produit</a>
+            </div>
+        {% else %}
+            <p>Aucun sweat-shirt trouvé.</p>
+        {% endfor %}
+    </div>
+{% endblock %}

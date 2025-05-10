@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Se connecter{% endblock %}
+
+{% block body %}
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="card p-4 shadow-sm" style="width: 350px;">
+        <h5 class="card-title mb-3">Se Connecter:</h5>
+
+        {% if error %}
+            <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+        {% endif %}
+
+        <form method="post">
+            <div class="mb-3">
+                <label for="email" class="form-label">Adresse e-mail :</label>
+                <input type="email" name="_email" id="email" value="{{ last_username }}" required class="form-control">
+            </div>    
+
+            <div class="mb-3">
+                <label for="password" class="form-label">Mot de passe :</label>
+                <input type="password" name="_password" id="password" required class="form-control">
+            </div>
+
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+            <button type="submit" class="btn btn-primary w-100 mb-2">Se Connecter</button>
+
+            <div class="text-center mb-2">
+                <a href="#">Mot de passe oublié</a>
+            </div>
+
+            <div class="text-center">
+                Pas encore inscrit ?<br>
+                <a href="{{ path('app_register') }}" class="btn btn-outline-primary mt-2">Créer un compte</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

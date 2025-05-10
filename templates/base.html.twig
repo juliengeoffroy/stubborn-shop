@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Stubborn{% endblock %}</title>
+
+    <!-- ✅ Bootstrap 5 CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .hover-shadow:hover {
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+        .navbar-custom {
+            background-color: #343a40;
+        }
+        .navbar-custom .nav-link,
+        .navbar-custom .navbar-brand,
+        .navbar-custom small {
+            color: white !important;
+        }
+        .navbar-custom .nav-link:hover {
+            color: #ffc107 !important;
+        }
+
+        .navbar-toggler {
+            border-color: white; /* Pour que la bordure du bouton soit blanche aussi */
+        }
+
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='white' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+        }
+
+    </style>
+
+    {% block stylesheets %}{% endblock %}
+</head>
+<body>
+
+{% for label, messages in app.flashes %}
+    {% for message in messages %}
+        <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    {% endfor %}
+{% endfor %}
+
+<!-- ✅ NAVBAR modifiée -->
+<nav class="navbar navbar-expand-lg navbar-custom shadow-sm">
+    <div class="container">
+        <a class="navbar-brand d-flex flex-column align-items-start" href="{{ path('home') }}" >
+            <div class="d-flex align-items-center">
+                <img src="{{ asset('images/Logo.png') }}" alt="Logo Stubborn" width="140" height="140" class="me-2" style="background-color: white; padding: 5px; border-radius: 8px;">  
+            </div>
+            <small class="ms-5">Slogan: Don't compromise on your look</small>
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarMenu">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link {% if app.request.get('_route') == 'home' %}fw-bold text-decoration-underline{% endif %}" href="{{ path('home') }}">Accueil</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if app.request.get('_route') starts with 'products' %}fw-bold text-decoration-underline{% endif %}" href="{{ path('products') }}">Boutique</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if app.request.get('_route') == 'app_cart' %}fw-bold text-decoration-underline{% endif %}" href="{{ path('app_cart') }}">Panier</a>
+                </li>
+
+                {% if app.user %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_logout') }}">Se déconnecter</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link {% if app.request.get('_route') == 'app_login' %}fw-bold text-decoration-underline{% endif %}" href="{{ path('app_login') }}">Se connecter</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if app.request.get('_route') == 'app_register' %}fw-bold text-decoration-underline{% endif %}" href="{{ path('app_register') }}">S’inscrire</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- ✅ CONTENU PRINCIPAL -->
+<main class="container py-4">
+    {% block body %}{% endblock %}
+</main>
+
+<!-- ✅ Footer harmonisé -->
+<footer class="text-center py-3 border-top mt-5" style="background-color: #343a40; color: white;">
+    <div class="mt-5 p-4 border rounded">
+        <h5 class="mb-2">Informations de la société :</h5>
+        <p><strong>Stubborn</strong></p>
+        <p>📍 Piccadilly Circus, London W1J 0DA, Royaume-Uni</p>
+        <p>📧 <a href="mailto:stubborn@blabla.com" style="color: #ffc107;">stubborn@blabla.com</a></p>
+    </div>
+    <small>© {{ "now"|date("Y") }} Stubborn – Piccadilly Circus – stubborn@blabla.com</small>
+</footer>
+
+<!-- ✅ Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+{% block javascripts %}{% endblock %}
+</body>
+</html>
