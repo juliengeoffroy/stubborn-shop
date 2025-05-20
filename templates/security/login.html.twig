@@ -2,6 +2,11 @@
 
 {% block title %}Se connecter{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+{% endblock %}
+
 {% block body %}
 <div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
     <div class="card p-4 shadow-sm" style="width: 350px;">
@@ -14,14 +19,19 @@
         <form method="post">
             <div class="mb-3">
                 <label for="email" class="form-label">Adresse e-mail :</label>
-                <input type="email" name="_email" id="email" value="{{ last_username }}" required class="form-control">
+                <input type="email" name="_email" value="{{ last_username }}" required class="form-control">
             </div>    
 
-            <div class="mb-3">
+            <div class="mb-3 position-relative">
                 <label for="password" class="form-label">Mot de passe :</label>
-                <input type="password" name="_password" id="password" required class="form-control">
+                <div class="input-group">
+                    <input type="password" name="_password" id="password" required class="form-control">
+                    <span class="input-group-text">
+                        <i class="bi bi-eye toggle-password" style="cursor: pointer;"></i>
+                    </span>
+                </div>
             </div>
-
+            
             <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
             <button type="submit" class="btn btn-primary w-100 mb-2">Se Connecter</button>
@@ -37,4 +47,26 @@
         </form>
     </div>
 </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll(".toggle-password").forEach(function (icon) {
+                icon.addEventListener("click", function () {
+                    const input = this.closest(".input-group").querySelector("input");
+                    if (input.type === "password") {
+                        input.type = "text";
+                        this.classList.remove("bi-eye");
+                        this.classList.add("bi-eye-slash");
+                    } else {
+                        input.type = "password";
+                        this.classList.remove("bi-eye-slash");
+                        this.classList.add("bi-eye");
+                    }
+                });
+            });
+        });
+    </script>
 {% endblock %}

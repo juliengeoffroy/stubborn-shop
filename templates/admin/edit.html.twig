@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier Sweatshirt{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1 class="mb-4">Modifier le Sweatshirt : {{ sweatshirt.name }}</h1>
+
+    {{ form_start(form) }}
+        <div class="mb-3">
+            {{ form_label(form.name) }}
+            {{ form_widget(form.name, {attr: {class: 'form-control'}}) }}
+            {{ form_errors(form.name) }}
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.price) }}
+            {{ form_widget(form.price, {attr: {class: 'form-control'}}) }}
+            {{ form_errors(form.price) }}
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.image) }}
+            {{ form_widget(form.image, {attr: {class: 'form-control'}}) }}
+            {{ form_errors(form.image) }}
+        </div>
+
+        <div class="mb-3 form-check">
+            {{ form_widget(form.isFeatured, {attr: {class: 'form-check-input'}}) }}
+            {{ form_label(form.isFeatured, null, {label_attr: {class: 'form-check-label'}}) }}
+            {{ form_errors(form.isFeatured) }}
+        </div>
+
+        <h4>Stock par taille</h4>
+        <div class="row">
+            {% for size in ['XS', 'S', 'M', 'L', 'XL'] %}
+                <div class="col-md-2 mb-3">
+                    <label for="stock_{{ size }}" class="form-label">{{ size }}</label>
+                    <input type="number" id="stock_{{ size }}" name="stock[{{ size }}]" value="{{ sweatshirt.stock[size]|default(0) }}" min="0" class="form-control">
+                </div>
+            {% endfor %}
+        </div>
+
+        <button class="btn btn-success">Enregistrer</button>
+    {{ form_end(form) }}
+
+    <a href="{{ path('admin') }}" class="btn btn-link mt-3">Retour à la liste</a>
+</div>
+{% endblock %}
+ 

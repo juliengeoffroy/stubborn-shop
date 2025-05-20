@@ -6,7 +6,7 @@ use App\Entity\Sweatshirt;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
-class AppFixtures extends Fixture
+class SweatshirtFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
@@ -33,11 +33,13 @@ class AppFixtures extends Fixture
                     str_contains($name, 'Borninusa') ||
                     str_contains($name, 'Pokeball')
                 );
-
-            
+            $sweat->setStockXS(2);
+            $sweat->setStockS(2);
+            $sweat->setStockM(2);
+            $sweat->setStockL(2);
+            $sweat->setStockXL(2);    
             $manager->persist($sweat);
         }
-
         $manager->flush();
     }
 }

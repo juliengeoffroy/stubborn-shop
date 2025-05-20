@@ -1,39 +1,46 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Admin - Gestion des produits{% endblock %}
+{% block title %}Admin - Liste des produits{% endblock %}
 
 {% block body %}
-    <h1 class="my-4">Gestion des Sweatshirts</h1>
+<div class="container mt-5">
+    <h1 class="mb-4">Gestion des Sweatshirts</h1>
 
-    <table class="table table-bordered table-hover">
-        <thead>
+    <table class="table table-bordered text-center align-middle">
+        <thead class="table-light">
             <tr>
+                <th>Image</th>
                 <th>Nom</th>
                 <th>Prix</th>
-                <th>Image</th>
-                <th>Mise en avant</th>
+                <th>En avant</th>
+                <th>Stock</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
-            {% for sweat in sweatshirts %}
+            {% for sweatshirt in sweatshirts %}
                 <tr>
-                    <td>{{ sweat.name }}</td>
-                    <td>{{ sweat.price }} €</td>
-                    <td><img src="{{ asset('images/' ~ sweat.image) }}" width="80"></td>
-                    <td>{{ sweat.isFeatured ? 'Oui' : 'Non' }}</td>
                     <td>
-                        <!-- Les boutons viendront plus tard -->
-                        <a href="#" class="btn btn-warning btn-sm disabled">Ajouter</a>
-                        <a href="#" class="btn btn-warning btn-sm disabled">Modifier</a>
-                        <a href="#" class="btn btn-danger btn-sm disabled">Supprimer</a>
+                        {% if sweatshirt.image %}
+                            <img src="{{ asset('images/' ~ sweatshirt.image) }}" width="80" alt="{{ sweatshirt.name }}">
+                        {% else %}
+                            <em>Aucune image</em>
+                        {% endif %}
                     </td>
-                </tr>
-            {% else %}
-                <tr>
-                    <td colspan="5" class="text-center">Aucun sweatshirt en base.</td>
+                    <td>{{ sweatshirt.name }}</td>
+                    <td>{{ sweatshirt.price }} €</td>
+                    <td>{{ sweatshirt.isFeatured ? 'Oui' : 'Non' }}</td>
+                    <td>
+                        {% for size, quantity in sweatshirt.stock %}
+                            <div><strong>{{ size }} :</strong> {{ quantity }}</div>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        <a href="{{ path('admin_sweatshirt_edit', {id: sweatshirt.id}) }}" class="btn btn-primary btn-sm">Modifier</a>
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
+</div>
 {% endblock %}

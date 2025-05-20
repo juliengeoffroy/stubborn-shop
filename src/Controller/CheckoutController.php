@@ -2,50 +2,55 @@
 
 namespace App\Controller;
 
-use App\Entity\Cart;
+use App\Repository\CartRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Stripe\Checkout\Session;
 use Stripe\Stripe;
+use Stripe\Checkout\Session;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class CheckoutController extends AbstractController
 {
-    #[Route('/checkout', name: 'checkout')]
-    public function checkout(EntityManagerInterface $em, Security $security): Response
-    {
+    #[Route('/checkout', name: 'app_checkout')]
+    public function checkout(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        Security $security,
+        CartRepository $cartRepository
+    ): Response {
         $user = $security->getUser();
 
-        // Pour tester sans être connecté
         if (!$user) {
-            $user = $em->getRepository(\App\Entity\User::class)->find(1);
+            return $this->redirectToRoute('app_login');
         }
 
-        $cart = $em->getRepository(Cart::class)->findOneBy(['user' => $user]);
+        $cart = $cartRepository->findOneBy(['user' => $user]);
 
-        if (!$cart || $cart->getCartItems()->isEmpty()) {
-            $this->addFlash('danger', 'Votre panier est vide.');
+        if (!$cart || count($cart->getCartItems()) === 0) {
+            $this->addFlash('warning', 'Votre panier est vide.');
             return $this->redirectToRoute('app_cart');
         }
 
-        Stripe::setApiKey($_ENV['STRIPE_SECRET_KEY']);
+        Stripe::setApiKey($this->getParameter('stripe_secret_key'));
+
+        $baseUrl = $request->getSchemeAndHttpHost();
 
         $lineItems = [];
 
         foreach ($cart->getCartItems() as $item) {
-            $imageUrl = $this->generateUrl('home', [], UrlGeneratorInterface::ABSOLUTE_URL)
-                . 'images/' . $item->getSweatshirt()->getImage();
+            $sweatshirt = $item->getSweatshirt();
 
             $lineItems[] = [
                 'price_data' => [
                     'currency' => 'eur',
-                    'unit_amount' => $item->getSweatshirt()->getPrice() * 100,
+                    'unit_amount' => $sweatshirt->getPrice() * 100,
                     'product_data' => [
-                        'name' => $item->getSweatshirt()->getName(),
-                        'images' => [$imageUrl], // ✅ Image Stripe
+                        'name' => $sweatshirt->getName(),
+                        'images' => [$baseUrl . '/images/' . $sweatshirt->getImage()],
                     ],
                 ],
                 'quantity' => $item->getQuantity(),
@@ -60,31 +65,26 @@ class CheckoutController extends AbstractController
             'cancel_url' => $this->generateUrl('app_cart', [], UrlGeneratorInterface::ABSOLUTE_URL),
         ]);
 
-        return $this->redirect($session->url);
+        return $this->redirect($session->url, 303);
     }
 
     #[Route('/checkout/success', name: 'checkout_success')]
-    public function success(EntityManagerInterface $em, Security $security): Response
-    {
+    public function success(
+        EntityManagerInterface $entityManager,
+        Security $security,
+        CartRepository $cartRepository
+    ): Response {
         $user = $security->getUser();
+        $cart = $cartRepository->findOneBy(['user' => $user]);
 
-        if (!$user) {
-            $user = $em->getRepository(\App\Entity\User::class)->find(1);
-        }
-
-        if ($user) {
-            $cart = $em->getRepository(Cart::class)->findOneBy(['user' => $user]);
-
-            if ($cart) {
-                foreach ($cart->getCartItems() as $item) {
-                    $cart->removeCartItem($item);
-                    $em->remove($item);
-                }
-                $em->flush();
+        if ($cart) {
+            foreach ($cart->getCartItems() as $item) {
+                $entityManager->remove($item);
             }
+            $entityManager->flush();
         }
 
-        $this->addFlash('success', '✅ Paiement réussi, votre commande est validée.');
+        $this->addFlash('success', '✅ Paiement validé, votre panier est vidé.');
         return $this->redirectToRoute('home');
     }
 }

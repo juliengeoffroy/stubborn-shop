@@ -23,7 +23,7 @@
             </thead>
             <tbody>
                 {% for item in cartItems %}
-                    <tr>
+                    <tr class="cart-item">
                         <td>
                             <img src="{{ asset('images/' ~ item.sweatshirt.image) }}"
                                  alt="{{ item.sweatshirt.name }}"
@@ -49,8 +49,7 @@
                 {# ✅ Correction ici : on redirige vers la vraie boutique avec les filtres #}
                 <a href="{{ path('products') }}" class="btn btn-outline-secondary">Continuer mes achats</a>
                 <a href="{{ path('cart_clear') }}" class="btn btn-outline-danger">Vider le panier</a>
-                <a href="{{ path('checkout') }}" class="btn btn-success">Finaliser ma commande</a>
-
+                <a href="{{ path('app_checkout') }}" class="btn btn-success">Finaliser ma commande</a>
             </div>
         </div>
     {% endif %}

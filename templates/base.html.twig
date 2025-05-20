@@ -5,8 +5,11 @@
     <title>{% block title %}Stubborn{% endblock %}</title>
 
     <!-- ✅ Bootstrap 5 CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
+
         body {
             background-color: #f8f9fa;
         }
@@ -37,6 +40,26 @@
 
     {% block stylesheets %}{% endblock %}
 </head>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".toggle-password").forEach(function (icon) {
+            icon.addEventListener("click", function () {
+                const input = this.previousElementSibling;
+                if (input.type === "password") {
+                    input.type = "text";
+                    this.classList.remove("bi-eye");
+                    this.classList.add("bi-eye-slash");
+                } else {
+                    input.type = "password";
+                    this.classList.remove("bi-eye-slash");
+                    this.classList.add("bi-eye");
+                }
+            });
+        });
+    });
+</script>
+
 <body>
 
 {% for label, messages in app.flashes %}
@@ -67,12 +90,16 @@
                 <li class="nav-item">
                     <a class="nav-link {% if app.request.get('_route') == 'home' %}fw-bold text-decoration-underline{% endif %}" href="{{ path('home') }}">Accueil</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link {% if app.request.get('_route') starts with 'products' %}fw-bold text-decoration-underline{% endif %}" href="{{ path('products') }}">Boutique</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {% if app.request.get('_route') == 'app_cart' %}fw-bold text-decoration-underline{% endif %}" href="{{ path('app_cart') }}">Panier</a>
-                </li>
+
+                {# Afficher Boutique et Panier uniquement si utilisateur connecté #}
+                {% if app.user %}
+                    <li class="nav-item">
+                        <a class="nav-link {% if app.request.get('_route') starts with 'products' %}fw-bold text-decoration-underline{% endif %}" href="{{ path('products') }}">Boutique</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if app.request.get('_route') == 'app_cart' %}fw-bold text-decoration-underline{% endif %}" href="{{ path('app_cart') }}">Panier</a>
+                    </li>
+                {% endif %}
 
                 {% if app.user %}
                     <li class="nav-item">

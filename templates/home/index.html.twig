@@ -59,7 +59,10 @@
                             <div class="card-body text-center">
                                 <h5 class="card-title">Nom : {{ sweat.name }}</h5>
                                 <p class="card-text">Prix : {{ sweat.price|number_format(2, ',', ' ') }} €</p>
-                                <a href="{{ path('product_show', {id: sweat.id}) }}" class="btn btn-outline-primary">Voir le produit</a>
+
+                                {% if app.user %}
+                                    <a href="{{ path('product_show', {id: sweat.id}) }}" class="btn btn-outline-primary">Voir le produit</a>
+                                {% endif %}    
                             </div>
                         </div>
                     </div>

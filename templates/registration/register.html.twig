@@ -2,6 +2,11 @@
 
 {% block title %}S’inscrire{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+{% endblock %}
+
 {% block body %}
 <style>
     body {
@@ -85,16 +90,30 @@
             {{ form_widget(registrationForm.deliveryAddress) }}
         </div>
 
-        <div class="form-group">
+        <div class="mb-3 position-relative">
             {{ form_label(registrationForm.plainPassword, 'Mot de passe :') }}
-            {{ form_widget(registrationForm.plainPassword) }}
+            <div class="input-group">
+                {{ form_widget(registrationForm.plainPassword, {
+                    'attr': {'class': 'form-control', 'type': 'password'}
+                }) }}
+                <span class="input-group-text">
+                    <i class="bi bi-eye toggle-password" style="cursor: pointer;"></i>
+                </span>
+            </div>
         </div>
-
-        <div class="form-group">
+        
+        <div class="mb-3 position-relative">
             {{ form_label(registrationForm.confirmPassword, 'Confirmer le mot de passe :') }}
-            {{ form_widget(registrationForm.confirmPassword) }}
+            <div class="input-group">
+                {{ form_widget(registrationForm.confirmPassword, {
+                    'attr': {'class': 'form-control', 'type': 'password'}
+                }) }}
+                <span class="input-group-text">
+                    <i class="bi bi-eye toggle-password" style="cursor: pointer;"></i>
+                </span>
+            </div>
         </div>
-
+        
         <div class="form-check">
             {{ form_widget(registrationForm.agreeTerms) }}
             {{ form_label(registrationForm.agreeTerms, 'Accepter les conditions') }}
@@ -109,4 +128,26 @@
         <a href="{{ path('app_login') }}" class="btn btn-outline-primary">Se Connecter</a>
     </div>
 </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll(".toggle-password").forEach(function (icon) {
+                icon.addEventListener("click", function () {
+                    const input = this.closest(".input-group").querySelector("input");
+                    if (input.type === "password") {
+                        input.type = "text";
+                        this.classList.remove("bi-eye");
+                        this.classList.add("bi-eye-slash");
+                    } else {
+                        input.type = "password";
+                        this.classList.remove("bi-eye-slash");
+                        this.classList.add("bi-eye");
+                    }
+                });
+            });
+        });
+    </script>
 {% endblock %}
