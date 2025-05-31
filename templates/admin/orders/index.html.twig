@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Commandes reçues{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1>📦 Commandes</h1>
+
+    <table class="table table-bordered table-striped mt-4">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Date</th>
+                <th>Total</th>
+                <th>Client</th>
+                <th>Statut</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+                <tr>
+                    <td>{{ order.id }}</td>
+                    <td>{{ order.createdAt|date('d/m/Y H:i') }}</td>
+                    <td>{{ order.total }} €</td>
+                    <td>{{ order.user.email }}</td>
+                    <td>{{ order.status }}</td>
+                    <td>
+                        <a href="{{ path('admin_order_show', {'id': order.id}) }}" class="btn btn-sm btn-secondary">🔍 Voir</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr><td colspan="6" class="text-center">Aucune commande trouvée.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

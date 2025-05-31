@@ -4,7 +4,12 @@
 
 {% block body %}
 <div class="container mt-5">
-    <h1 class="mb-4">Gestion des Sweatshirts</h1>
+    <h1 class="mb-4">Gestion des Sweat-shirts</h1>
+    <a href="{{ path('admin_sweatshirt_create') }}" class="btn btn-success mb-3">➕ Ajouter un Sweatshirt</a>
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">{{ message }}</div>
+    {% endfor %}
 
     <table class="table table-bordered text-center align-middle">
         <thead class="table-light">
@@ -18,29 +23,36 @@
             </tr>
         </thead>
         <tbody>
-            {% for sweatshirt in sweatshirts %}
-                <tr>
-                    <td>
-                        {% if sweatshirt.image %}
-                            <img src="{{ asset('images/' ~ sweatshirt.image) }}" width="80" alt="{{ sweatshirt.name }}">
-                        {% else %}
-                            <em>Aucune image</em>
-                        {% endif %}
-                    </td>
-                    <td>{{ sweatshirt.name }}</td>
-                    <td>{{ sweatshirt.price }} €</td>
-                    <td>{{ sweatshirt.isFeatured ? 'Oui' : 'Non' }}</td>
-                    <td>
-                        {% for size, quantity in sweatshirt.stock %}
-                            <div><strong>{{ size }} :</strong> {{ quantity }}</div>
-                        {% endfor %}
-                    </td>
-                    <td>
-                        <a href="{{ path('admin_sweatshirt_edit', {id: sweatshirt.id}) }}" class="btn btn-primary btn-sm">Modifier</a>
-                    </td>
-                </tr>
-            {% endfor %}
+        {% for sweatshirt in sweatshirts %}
+            <tr>
+                <td>
+                    {% if sweatshirt.image %}
+                        <img src="{{ asset('images/' ~ sweatshirt.image) }}" width="80">
+                    {% else %}
+                        <em>aucune</em>
+                    {% endif %}
+                </td>
+                <td>{{ sweatshirt.name }}</td>
+                <td>{{ sweatshirt.price }} €</td>
+                <td>{{ sweatshirt.isFeatured ? '✅' : '❌' }}</td>
+                <td>
+                    <strong>XS:</strong> {{ sweatshirt.stockXS }}<br>
+                    <strong>S:</strong> {{ sweatshirt.stockS }}<br>
+                    <strong>M:</strong> {{ sweatshirt.stockM }}<br>
+                    <strong>L:</strong> {{ sweatshirt.stockL }}<br>
+                    <strong>XL:</strong> {{ sweatshirt.stockXL }} 
+                </td>
+                <td>
+                    <a href="{{ path('admin_sweatshirt_edit', {id: sweatshirt.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
+                    <form method="post" action="{{ path('admin_sweatshirt_delete', {id: sweatshirt.id}) }}" style="display:inline-block;" onsubmit="return confirm('Supprimer ?')">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete_' ~ sweatshirt.id) }}">
+                        <button class="btn btn-danger btn-sm">Supprimer</button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
         </tbody>
     </table>
 </div>
 {% endblock %}
+

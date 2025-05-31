@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des produits{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1 class="mb-4">🧥 Liste des Sweatshirts</h1>
+
+    <a href="{{ path('admin_product_create') }}" class="btn btn-success mb-3">➕ Ajouter un Sweatshirt</a>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Prix</th>
+                <th>Stock</th>
+                <th>Mis en avant</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for sweatshirt in sweatshirts %}
+                <tr>
+                    <td>{{ sweatshirt.name }}</td>
+                    <td>{{ sweatshirt.price }} €</td>
+                    <td>
+                        XS: {{ sweatshirt.stockXS }},
+                        S: {{ sweatshirt.stockS }},
+                        M: {{ sweatshirt.stockM }},
+                        L: {{ sweatshirt.stockL }},
+                        XL: {{ sweatshirt.stockXL }}
+                    </td>
+                    <td>{% if sweatshirt.isFeatured %}✅{% else %}❌{% endif %}</td>
+                    <td>
+                        <a href="{{ path('admin_product_edit', {'id': sweatshirt.id}) }}" class="btn btn-primary btn-sm">✏️ Modifier</a>
+                        <form method="post" action="{{ path('admin_product_delete', {'id': sweatshirt.id}) }}" style="display:inline-block" onsubmit="return confirm('Supprimer ce produit ?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete_' ~ sweatshirt.id) }}">
+                            <button class="btn btn-danger btn-sm">🗑️ Supprimer</button>
+                        </form>
+                    </td>
+                </tr>
+            {% else %}
+                <tr><td colspan="5" class="text-center">Aucun produit trouvé.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

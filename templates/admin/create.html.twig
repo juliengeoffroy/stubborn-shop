@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer un Sweatshirt{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1 class="mb-4">Ajouter un nouveau Sweatshirt</h1>
+
+    {{ form_start(form) }}
+
+        <div class="mb-3">
+            {{ form_label(form.name) }}
+            {{ form_widget(form.name) }}
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.price) }}
+            {{ form_widget(form.price) }}
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.image) }}
+            {{ form_widget(form.image) }}
+        </div>
+
+        <div class="form-check form-switch mb-4">
+            {{ form_widget(form.isFeatured) }}
+            {{ form_label(form.isFeatured) }}
+        </div>
+
+        <h4 class="mt-4">Stock par taille</h4>
+        <div class="row">
+            <div class="col-md-2 mb-3">
+                {{ form_label(form.stockXS) }}
+                {{ form_widget(form.stockXS) }}
+            </div>
+            <div class="col-md-2 mb-3">
+                {{ form_label(form.stockS) }}
+                {{ form_widget(form.stockS) }}
+            </div>
+            <div class="col-md-2 mb-3">
+                {{ form_label(form.stockM) }}
+                {{ form_widget(form.stockM) }}
+            </div>
+            <div class="col-md-2 mb-3">
+                {{ form_label(form.stockL) }}
+                {{ form_widget(form.stockL) }}
+            </div>
+            <div class="col-md-2 mb-3">
+                {{ form_label(form.stockXL) }}
+                {{ form_widget(form.stockXL) }}
+            </div>
+        </div>
+
+        <button class="btn btn-success">Créer</button>
+
+    {{ form_end(form) }}
+
+    <a href="{{ path('admin') }}" class="btn btn-link mt-3">⬅️ Retour à la liste</a>
+</div>
+{% endblock %}

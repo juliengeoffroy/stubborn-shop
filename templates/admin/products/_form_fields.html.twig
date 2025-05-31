@@ -1,0 +1,30 @@
+<div class="mb-3">
+    {{ form_label(form.name) }}
+    {{ form_widget(form.name, {'attr': {'class': 'form-control'}}) }}
+</div>
+
+<div class="mb-3">
+    {{ form_label(form.price) }}
+    {{ form_widget(form.price, {'attr': {'class': 'form-control'}}) }}
+</div>
+
+<div class="mb-3">
+    {{ form_label(form.image) }}
+    {{ form_widget(form.image, {'attr': {'class': 'form-control'}}) }}
+</div>
+
+<div class="form-check mb-3">
+    {{ form_widget(form.isFeatured, {'attr': {'class': 'form-check-input'}}) }}
+    {{ form_label(form.isFeatured, null, {'label_attr': {'class': 'form-check-label'}}) }}
+</div>
+
+<h5 class="mt-4">Stock par taille</h5>
+<div class="row">
+    {% for size in ['XS', 'S', 'M', 'L', 'XL'] %}
+        <div class="col-md-2 mb-3">
+            <label class="form-label">{{ size }}</label>
+            <input type="number" name="stock[{{ size }}]" class="form-control"
+                   value="{{ attribute(sweatshirt, 'stock' ~ size)|default(0) }}" min="0">
+        </div>
+    {% endfor %}
+</div>

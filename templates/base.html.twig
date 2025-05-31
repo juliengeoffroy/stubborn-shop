@@ -99,6 +99,10 @@
                     <li class="nav-item">
                         <a class="nav-link {% if app.request.get('_route') == 'app_cart' %}fw-bold text-decoration-underline{% endif %}" href="{{ path('app_cart') }}">Panier</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if app.request.get('_route') == 'order_history' %}fw-bold text-decoration-underline{% endif %}" href="{{ path('order_history') }}">Mes commandes</a>
+                    </li>
+                    
                 {% endif %}
 
                 {% if app.user %}

@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Commande n°{{ order.id }}{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1 class="mb-4">🧾 Détails de la commande n°{{ order.id }}</h1>
+
+    <p><strong>Date :</strong> {{ order.createdAt|date('d/m/Y H:i') }}</p>
+    <p><strong>Statut :</strong> {{ order.status }}</p>
+
+    <ul>
+        {% for item in order.orderItems %}
+            <li>{{ item.quantity }} x {{ item.sweatshirt.name }} ({{ item.price }} €)</li>
+        {% endfor %}
+    </ul>
+
+    <p class="fw-bold">Total : {{ order.total }} €</p>
+
+    <a href="{{ path('order_history') }}" class="btn btn-secondary mt-3">⬅ Retour à l’historique</a>
+</div>
+{% endblock %}

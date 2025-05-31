@@ -98,4 +98,21 @@ class Sweatshirt
         }
         return $this;
     }
+
+    public function getStock(): array
+    {
+        return [
+            'XS' => $this->stockXS,
+            'S'  => $this->stockS,
+            'M'  => $this->stockM,
+            'L'  => $this->stockL,
+            'XL' => $this->stockXL,
+        ];
+    }
+
+    public function __toString(): string
+    {
+        return $this->name ?? '';
+    }
+
 }

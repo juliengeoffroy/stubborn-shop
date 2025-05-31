@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Commande confirmée{% endblock %}
+
+{% block body %}
+
+{% for label, messages in app.flashes %}
+    {% for message in messages %}
+        <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+{% endfor %}
+
+<div class="container mt-5">
+    <h1 class="mb-4">🎉 Merci pour votre commande !</h1>
+    <p>Votre commande a bien été enregistrée le {{ order.createdAt|date('d/m/Y à H:i') }}.</p>
+    <h4>Détails de la commande :</h4>
+
+    <ul>
+        {% for item in order.orderItems %}
+            <li>
+                {{ item.quantity }} x {{ item.sweatshirt.name }} — {{ item.price }} €
+            </li>
+        {% endfor %}
+    </ul>
+
+    <p class="fw-bold mt-3">Total : {{ order.total }} €</p>
+
+    <a href="{{ path('home') }}" class="btn btn-primary mt-3">Retour à l'accueil</a>
+</div>
+{% endblock %}

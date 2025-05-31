@@ -13,22 +13,14 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/admin')]
-#[IsGranted('ROLE_ADMIN')] // 🔐 Accès admin uniquement
+#[IsGranted('ROLE_ADMIN')]
 class AdminController extends AbstractController
 {
-    #[Route('/dashboard', name: 'admin_dashboard')]
-    public function dashboard(): Response
-    {
-        return $this->render('admin/dashboard.html.twig');
-    }
-
     #[Route('/', name: 'admin')]
     public function index(SweatshirtRepository $sweatshirtRepository): Response
     {
-        $sweatshirts = $sweatshirtRepository->findAll();
-
         return $this->render('admin/index.html.twig', [
-            'sweatshirts' => $sweatshirts
+            'sweatshirts' => $sweatshirtRepository->findAll(),
         ]);
     }
 
@@ -39,13 +31,15 @@ class AdminController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // 💡 Récupérer les stocks manuellement
-            $stockData = $request->request->all('stock'); // ex : ['XS' => 2, 'S' => 3, ...]
-            $sweatshirt->setStock($stockData);
+            $stockData = $request->request->all('stock');
+            $sweatshirt->setStockXS($stockData['XS'] ?? 2);
+            $sweatshirt->setStockS($stockData['S'] ?? 2);
+            $sweatshirt->setStockM($stockData['M'] ?? 2);
+            $sweatshirt->setStockL($stockData['L'] ?? 2);
+            $sweatshirt->setStockXL($stockData['XL'] ?? 2);
 
             $em->flush();
-
-            $this->addFlash('success', 'Sweatshirt mis à jour avec succès.');
+            $this->addFlash('success', 'Sweat-shirt mis à jour avec succès.');
             return $this->redirectToRoute('admin');
         }
 
@@ -56,17 +50,48 @@ class AdminController extends AbstractController
     }
 
     #[Route('/delete/{id}', name: 'admin_sweatshirt_delete', methods: ['POST'])]
-    public function delete(
-        Sweatshirt $sweatshirt,
-        Request $request,
-        EntityManagerInterface $em
-    ): Response {
-        if ($this->isCsrfTokenValid('delete_' . $sweatshirt->getId(), $request->request->get('_token'))) {
-            $em->remove($sweatshirt);
-            $em->flush();
-            $this->addFlash('success', 'Sweatshirt supprimé');
+    public function delete(Sweatshirt $sweatshirt, Request $request, EntityManagerInterface $em): Response
+    {
+        if (!$this->isCsrfTokenValid('delete_'.$sweatshirt->getId(), $request->request->get('_token'))) {
+            return $this->redirectToRoute('admin');
         }
 
+        if (!$sweatshirt->getOrderItems()->isEmpty()) {
+            $this->addFlash('danger', 'Impossible de supprimer : ce produit a déjà été commandé.');
+            return $this->redirectToRoute('admin');
+        }
+
+        $em->remove($sweatshirt);
+        $em->flush();
+        $this->addFlash('success', 'Sweatshirt supprimé.');
+
         return $this->redirectToRoute('admin');
+    }
+
+    #[Route('/create', name: 'admin_sweatshirt_create')]
+    public function create(Request $request, EntityManagerInterface $em): Response
+    {
+        $sweatshirt = new Sweatshirt();
+        $form = $this->createForm(SweatshirtType::class, $sweatshirt);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $stockData = $request->request->all('stock');
+            $sweatshirt->setStockXS($stockData['XS'] ?? 2);
+            $sweatshirt->setStockS($stockData['S'] ?? 2);
+            $sweatshirt->setStockM($stockData['M'] ?? 2);
+            $sweatshirt->setStockL($stockData['L'] ?? 2);
+            $sweatshirt->setStockXL($stockData['XL'] ?? 2);
+
+            $em->persist($sweatshirt);
+            $em->flush();
+
+            $this->addFlash('success', 'Sweatshirt créé avec succès.');
+            return $this->redirectToRoute('admin');
+        }
+
+        return $this->render('admin/create.html.twig', [
+            'form' => $form->createView()
+        ]);
     }
 }
